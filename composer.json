@@ -1,0 +1,26 @@
+{
+    "name": "colinwait/laravel-scissors",
+    "description": "scissors upload service.",
+    "keywords": [
+        "laravel",
+        "scissors",
+        "hoge",
+        "colinwait"
+    ],
+    "require": {
+        "intervention/image": "^2.3",
+        "qiniu/php-sdk": "^7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Colinwait\\LaravelScissors\\": "src/"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "colinwait",
+            "email": "colinwaitly@gmail.com"
+        }
+    ]
+}
