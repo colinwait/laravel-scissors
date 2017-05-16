@@ -1,6 +1,7 @@
 {
     "name": "colinwait/laravel-scissors",
     "description": "scissors upload service.",
+    "minimum-stability": "dev",
     "keywords": [
         "laravel",
         "scissors",
