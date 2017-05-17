@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 class ScissorProvider extends ServiceProvider
 {
-    protected $config = 'upload-image';
+    protected $config = 'scissor';
 
     /**
      * Bootstrap the application services.
@@ -44,22 +44,20 @@ class ScissorProvider extends ServiceProvider
      */
     public function register()
     {
-        $config = $this->config;
-        $this->app->singleton('scissors', function () use ($config) {
-            return $this->getEntity($config);
+        $this->app->singleton('scissors', function () {
+            return $this->getEntity();
         });
     }
 
     /**
      * get entity by driver
      *
-     * @param $config
-     *
      * @return QiniuEntity|ScissorEntity
      */
-    private function getEntity($config)
+    private function getEntity()
     {
-        $driver = $this->app['config']->get($config)['driver'];
+        $config = $this->app['config']->get($this->config);
+        $driver = $config['driver'];
         switch ($driver) {
             case 'qiniu' :
                 return new QiniuEntity($config);

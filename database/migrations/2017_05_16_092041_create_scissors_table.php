@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUploadImagesTable extends Migration
+class CreateScissorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,13 +12,16 @@ class CreateUploadImagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('upload_images', function (Blueprint $table) {
+        Schema::create('scissors', function (Blueprint $table) {
             $table->string('key')->unique()->index();
             $table->integer('width');
             $table->integer('height');
-            $table->integer('size');
-            $table->string('path');
-            $table->string('extend');
+            $table->integer('filesize');
+            $table->string('dir')->nullable();
+            $table->string('filepath')->nullable();
+            $table->string('filename')->nullable();
+            $table->string('origin_url')->nullable();
+            $table->string('mime');
             $table->timestamps();
         });
     }
@@ -30,6 +33,6 @@ class CreateUploadImagesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('upload_images');
+        Schema::drop('scissors');
     }
 }

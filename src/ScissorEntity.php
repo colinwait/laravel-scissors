@@ -15,4 +15,19 @@ class ScissorEntity implements ScissorInterface
     {
         // TODO: Implement fetch() method.
     }
+
+    public function put($data, $key)
+    {
+        // TODO: Implement put() method.
+    }
+
+    public function delete($key)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function get($key)
+    {
+
+    }
 }
