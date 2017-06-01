@@ -9,6 +9,6 @@ class Scissor extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'scissors';
+        return 'scissor';
     }
 }

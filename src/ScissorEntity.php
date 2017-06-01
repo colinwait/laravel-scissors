@@ -3,31 +3,105 @@
 
 namespace Colinwait\LaravelScissors;
 
-
-class ScissorEntity implements ScissorInterface
+class ScissorEntity
 {
-    public function putFile($path, $key = null)
+    private $config;
+
+    private $source;
+
+    public function __construct()
     {
-        return 123;
+        $this->config = config('scissor');
     }
 
-    public function fetch($url, $key = null)
+    public function generateToken()
     {
-        // TODO: Implement fetch() method.
+        $once        = str_random(32);
+        $timestamp   = time();
+        $params      = ['once' => $once, 'timestamp' => $timestamp, 'expire' => $this->config['expire']];
+        $policy      = safe_base64url_encode(json_encode($params));
+        $encode_sign = safe_base64url_encode(hash_hmac('sha1', $policy, $this->config['secret_key'], true));
+        $token       = $this->config['access_key'] . ':' . $encode_sign . ':' . $policy;
+
+        return $token;
     }
 
-    public function put($data, $key)
+    public function upload($source, $key = null, $private = 0)
     {
-        // TODO: Implement put() method.
+        $this->source = $source;
+        $private      = intval($private) ? 1 : 0;
+        $url          = $this->config['host'] . $this->config['apis']['upload'];
+        $client       = new Client('POST', $url);
+        switch (true) {
+            case $this->isFileSource():
+                $client->setMultiPartParams('file', fopen($source->getRealPath(), 'r'));
+                break;
+
+            case $this->isBase64():
+                $client->setMultiPartParams('data', safe_base64url_encode($source));
+                break;
+
+            case $this->isUrl():
+                $client->setMultiPartParams('url', safe_base64url_encode($source));
+                break;
+
+            case $this->isFilePath():
+                $client->setMultiPartParams('file', fopen($source, 'r'));
+                break;
+
+            default:
+                return ['error' => 'No data source'];
+        }
+        $client->setMultiPartParams('key', $key);
+        $client->setMultiPartParams('private', $private);
+        $client->setMultiPartParams('token', $this->generateToken());
+
+        return $client->request();
     }
 
-    public function delete($key)
+    private function isFileSource()
     {
-        // TODO: Implement delete() method.
+        return is_a($this->source, 'Symfony\Component\HttpFoundation\File\UploadedFile');
     }
 
-    public function get($key)
+    private function isBase64()
     {
+        $data = $this->decodeDataUrl($this->source);
 
+        return is_null($data) ? false : true;
+    }
+
+    private function decodeDataUrl($data_url)
+    {
+        if (!is_string($data_url)) {
+            return null;
+        }
+
+        $pattern = "/^data:(?:image\/[a-zA-Z\-\.]+)(?:charset=\".+\")?;base64,(?P<data>.+)$/";
+        preg_match($pattern, $data_url, $matches);
+
+        if (is_array($matches) && array_key_exists('data', $matches)) {
+            return base64_decode($matches['data']);
+        }
+
+        return null;
+    }
+
+    private function isUrl()
+    {
+        return (bool)filter_var($this->source, FILTER_VALIDATE_URL);
+    }
+
+    private function isFilePath()
+    {
+        if (is_string($this->source)) {
+            try {
+                return is_file($this->source);
+            } catch (\Exception $e) {
+                return false;
+            }
+        }
+
+        return false;
     }
 }

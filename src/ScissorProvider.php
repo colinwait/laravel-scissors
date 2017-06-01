@@ -16,7 +16,6 @@ class ScissorProvider extends ServiceProvider
     public function boot()
     {
         $this->setupConfig();
-        $this->setupMigrations();
     }
 
     /**
@@ -29,42 +28,14 @@ class ScissorProvider extends ServiceProvider
     }
 
     /**
-     * setup migrations
-     */
-    protected function setupMigrations()
-    {
-        $source = realpath(__DIR__ . '/../database/migrations/');
-        $this->publishes([$source => database_path('migrations')], 'migrations');
-    }
-
-    /**
      * Register the application services.
      *
      * @return void
      */
     public function register()
     {
-        $this->app->singleton('scissors', function () {
-            return $this->getEntity();
+        $this->app->singleton('scissor', function () {
+            return new ScissorEntity();
         });
-    }
-
-    /**
-     * get entity by driver
-     *
-     * @return QiniuEntity|ScissorEntity
-     */
-    private function getEntity()
-    {
-        $config = $this->app['config']->get($this->config);
-        $driver = $config['driver'];
-        switch ($driver) {
-            case 'qiniu' :
-                return new QiniuEntity($config);
-                break;
-            default :
-                return new ScissorEntity($config);
-                break;
-        }
     }
 }

@@ -9,13 +9,16 @@
         "colinwait"
     ],
     "require": {
-        "intervention/image": "^2.3",
-        "qiniu/php-sdk": "^7.1"
+        "php": ">=5.5.9",
+        "guzzlehttp/guzzle": "^6.2"
     },
     "autoload": {
         "psr-4": {
             "Colinwait\\LaravelScissors\\": "src/"
-        }
+        },
+        "files":[
+            "src/functions.php"
+        ]
     },
     "license": "MIT",
     "authors": [
