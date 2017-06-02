@@ -16,6 +16,10 @@ class Client
 
     private $url;
 
+    private $form_params;
+
+    private $headers;
+
     public function __construct($method, $url)
     {
         $this->client = new Http();
@@ -35,14 +39,33 @@ class Client
         $this->multipart_params[] = $multipart_params;
     }
 
+    public function setFormParams($name, $value)
+    {
+        $this->form_params[$name] = $value;
+    }
+
+    public function setHeaders($name, $value)
+    {
+        $this->headers[$name] = $value;
+    }
+
     public function request()
     {
+        $method = strtolower($this->method);
         try {
-            $response = $this->client->request($this->method, $this->url, ['multipart' => $this->multipart_params]);
+            $response = $this->client->$method($this->url, [
+                'multipart'   => $this->multipart_params,
+                'form_params' => $this->form_params,
+                'headers'     => $this->headers,
+            ]);
             $result   = json_decode($response->getBody(), 1);
         } catch (BadResponseException $e) {
             $response = $e->getResponse();
             $result   = json_decode($response->getBody()->getContents(), 1);
+        }
+
+        if (is_null($result)) {
+            return ['error' => 'Upload Failed'];
         }
 
         if (isset($result['error']) && $result['error']) {

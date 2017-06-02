@@ -63,6 +63,15 @@ class ScissorEntity
         return $client->request();
     }
 
+    public function delete($key)
+    {
+        $url    = $this->config['host'] . $this->config['apis']['delete'] . '/' . $key;
+        $client = new Client('DELETE', $url);
+        $client->setFormParams('token', $this->generateToken());
+
+        return $client->request();
+    }
+
     private function isFileSource()
     {
         return is_a($this->source, 'Symfony\Component\HttpFoundation\File\UploadedFile');

@@ -16,6 +16,7 @@ return [
     */
     'apis'       => [
         'upload' => '/upload',
+        'delete' => '/delete',
     ],
 
     /*
