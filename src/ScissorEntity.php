@@ -37,8 +37,12 @@ class ScissorEntity
                 $client->setMultiPartParams('file', fopen($source->getRealPath(), 'r'));
                 break;
 
+            case $this->isDataUrl():
+                $client->setMultiPartParams('data_url', safe_base64url_encode($source));
+                break;
+
             case $this->isBase64():
-                $client->setMultiPartParams('data', safe_base64url_encode($source));
+                $client->setMultiPartParams('data', $source);
                 break;
 
             case $this->isUrl():
@@ -64,11 +68,20 @@ class ScissorEntity
         return is_a($this->source, 'Symfony\Component\HttpFoundation\File\UploadedFile');
     }
 
-    private function isBase64()
+    private function isDataUrl()
     {
         $data = $this->decodeDataUrl($this->source);
 
         return is_null($data) ? false : true;
+    }
+
+    private function isBase64()
+    {
+        if (!is_string($this->source)) {
+            return false;
+        }
+
+        return base64_encode(base64_decode($this->source)) === $this->source;
     }
 
     private function decodeDataUrl($data_url)
