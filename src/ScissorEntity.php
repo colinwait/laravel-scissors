@@ -38,11 +38,11 @@ class ScissorEntity
                 break;
 
             case $this->isDataUrl():
-                $client->setMultiPartParams('data_url', safe_base64url_encode($source));
+                $client->setMultiPartParams('data', safe_base64url_encode($source));
                 break;
 
             case $this->isBase64():
-                $client->setMultiPartParams('data', $source);
+                $client->setMultiPartParams('data', safe_base64url_encode(base64_decode($source)));
                 break;
 
             case $this->isUrl():
