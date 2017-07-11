@@ -14,11 +14,18 @@ class ScissorEntity
         $this->config = config('scissor');
     }
 
-    public function generateToken()
+    public function generateToken($key = null, $bucket = null, $private = 0)
     {
         $once        = str_random(32);
         $timestamp   = time();
-        $params      = ['once' => $once, 'timestamp' => $timestamp, 'expire' => $this->config['expire']];
+        $params      = [
+            'once'      => $once,
+            'timestamp' => $timestamp,
+            'expire'    => $this->config['expire'],
+            'private'   => $private ? 1 : 0,
+            'bucket'    => $bucket ? $bucket : $this->config['bucket'],
+            'key'       => $key,
+        ];
         $policy      = safe_base64url_encode(json_encode($params));
         $encode_sign = safe_base64url_encode(hash_hmac('sha1', $policy, $this->config['secret_key'], true));
         $token       = $this->config['access_key'] . ':' . $encode_sign . ':' . $policy;
@@ -26,7 +33,7 @@ class ScissorEntity
         return $token;
     }
 
-    public function upload($source, $key = null, $private = 0)
+    public function upload($source, $key = null, $private = 0, $bucket = null)
     {
         $this->source = $source;
         $private      = intval($private) ? 1 : 0;
@@ -56,18 +63,16 @@ class ScissorEntity
             default:
                 return ['error' => 'No data source'];
         }
-        $client->setMultiPartParams('key', $key);
-        $client->setMultiPartParams('private', $private);
-        $client->setMultiPartParams('token', $this->generateToken());
+        $client->setMultiPartParams('token', $this->generateToken($key, $bucket, $private));
 
         return $client->request();
     }
 
-    public function delete($key)
+    public function delete($key, $bucket = null)
     {
         $url    = $this->config['host'] . $this->config['apis']['delete'] . '/' . $key;
         $client = new Client('DELETE', $url);
-        $client->setFormParams('token', $this->generateToken());
+        $client->setFormParams('token', $this->generateToken($key, $bucket));
 
         return $client->request();
     }
