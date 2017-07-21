@@ -161,7 +161,7 @@ class ScissorEntity
     public function updateViewer($viewer, $data)
     {
         $url    = $this->config['host'] . $this->config['apis']['viewer'];
-        $client = new Client('PUT', $url);
+        $client = new Client('POST', $url);
         if (isset($data['water_position']) && is_numeric($data['water_position'])) {
             if (!in_array($data['water_position'], $this->position_num)) {
                 return ['error' => 'Position wrong'];
