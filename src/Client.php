@@ -65,7 +65,7 @@ class Client
         }
 
         if (is_null($result)) {
-            return ['error' => 'Upload Failed'];
+            return ['error' => 'Request failed'];
         }
 
         if (isset($result['error']) && $result['error']) {

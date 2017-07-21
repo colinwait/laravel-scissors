@@ -9,6 +9,20 @@ class ScissorEntity
 
     private $source;
 
+    private $positions = [
+        'top-left',
+        'top',
+        'top-right',
+        'left',
+        'center',
+        'right',
+        'bottom-left',
+        'bottom',
+        'bottom-right',
+    ];
+
+    private $position_num = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
     public function __construct()
     {
         $this->config = config('scissor');
@@ -77,20 +91,23 @@ class ScissorEntity
         return $client->request();
     }
 
-    private function isFileSource()
+    private function isFileSource($source = null)
     {
+        $this->source = $source ?: $this->source;
         return is_a($this->source, 'Symfony\Component\HttpFoundation\File\UploadedFile');
     }
 
-    private function isDataUrl()
+    private function isDataUrl($source = null)
     {
-        $data = $this->decodeDataUrl($this->source);
+        $this->source = $source ?: $this->source;
+        $data         = $this->decodeDataUrl($this->source);
 
         return is_null($data) ? false : true;
     }
 
-    private function isBase64()
+    private function isBase64($source = null)
     {
+        $this->source = $source ?: $this->source;
         if (!is_string($this->source)) {
             return false;
         }
@@ -114,13 +131,15 @@ class ScissorEntity
         return null;
     }
 
-    private function isUrl()
+    private function isUrl($source = null)
     {
+        $this->source = $source ?: $this->source;
         return (bool)filter_var($this->source, FILTER_VALIDATE_URL);
     }
 
-    private function isFilePath()
+    private function isFilePath($source = null)
     {
+        $this->source = $source ?: $this->source;
         if (is_string($this->source)) {
             try {
                 return is_file($this->source);
@@ -130,5 +149,25 @@ class ScissorEntity
         }
 
         return false;
+    }
+
+    public function updateViewer($data)
+    {
+        $url    = $this->config['host'] . $this->config['apis']['update_viewer'];
+        $client = new Client('PUT', $url);
+        if (isset($data['water_position']) && is_numeric($data['water_position'])) {
+            if (!in_array($data['water_position'],$this->position_num)) {
+                return ['error' => 'Position wrong'];
+            }
+            $data['water_position'] = $this->positions[$data['water_position'] - 1];
+        }
+        if (isset($data['file']) && $this->isFileSource($data['file'])) {
+            $data['file'] = fopen($data['file']->getRealPath(), 'r');
+        }
+        foreach ($data as $key => $item) {
+            $client->setMultiPartParams($key, $item);
+        }
+
+        return $client->request();
     }
 }
