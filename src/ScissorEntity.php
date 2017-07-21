@@ -151,12 +151,19 @@ class ScissorEntity
         return false;
     }
 
-    public function updateViewer($data)
+    public function getViewer($viewer)
     {
-        $url    = $this->config['host'] . $this->config['apis']['update_viewer'];
+        $url    = $this->config['host'] . $this->config['apis']['viewer'] . '/' . $viewer;
+        $client = new Client('GET', $url);
+        return $client->request();
+    }
+
+    public function updateViewer($viewer, $data)
+    {
+        $url    = $this->config['host'] . $this->config['apis']['viewer'];
         $client = new Client('PUT', $url);
         if (isset($data['water_position']) && is_numeric($data['water_position'])) {
-            if (!in_array($data['water_position'],$this->position_num)) {
+            if (!in_array($data['water_position'], $this->position_num)) {
                 return ['error' => 'Position wrong'];
             }
             $data['water_position'] = $this->positions[$data['water_position'] - 1];
@@ -167,6 +174,7 @@ class ScissorEntity
         foreach ($data as $key => $item) {
             $client->setMultiPartParams($key, $item);
         }
+        $client->setMultiPartParams('viewer', $viewer);
 
         return $client->request();
     }

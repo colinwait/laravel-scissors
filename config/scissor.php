@@ -15,9 +15,9 @@ return [
     |
     */
     'apis'       => [
-        'upload'        => '/upload',
-        'delete'        => '/delete',
-        'update_viewer' => '/viewer',
+        'upload' => '/upload',
+        'delete' => '/delete',
+        'viewer' => '/viewer',
     ],
 
     /*
