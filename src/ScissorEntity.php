@@ -28,18 +28,16 @@ class ScissorEntity
         $this->config = config('scissor');
     }
 
-    public function generateToken($key = null, $bucket = null, $private = 0)
+    public function generateToken(array $request_params = [])
     {
         $once        = str_random(32);
         $timestamp   = time();
-        $params      = [
+        $form_params = [
             'once'      => $once,
             'timestamp' => $timestamp,
             'expire'    => $this->config['expire'],
-            'private'   => $private ? 1 : 0,
-            'bucket'    => $bucket ? $bucket : $this->config['bucket'],
-            'key'       => $key,
         ];
+        $params      = array_merge($form_params, $request_params);
         $policy      = safe_base64url_encode(json_encode($params));
         $encode_sign = safe_base64url_encode(hash_hmac('sha1', $policy, $this->config['secret_key'], true));
         $token       = $this->config['access_key'] . ':' . $encode_sign . ':' . $policy;
@@ -77,7 +75,12 @@ class ScissorEntity
             default:
                 return ['error' => 'No data source'];
         }
-        $client->setMultiPartParams('token', $this->generateToken($key, $bucket, $private));
+        $params = [
+            'key'     => $key,
+            'bucket'  => $bucket ?: $this->config['bucket'],
+            'private' => $private ? 1 : 0,
+        ];
+        $client->setMultiPartParams('token', $this->generateToken($params));
 
         return $client->request();
     }
@@ -86,7 +89,11 @@ class ScissorEntity
     {
         $url    = $this->config['host'] . $this->config['apis']['delete'] . '/' . $key;
         $client = new Client('DELETE', $url);
-        $client->setFormParams('token', $this->generateToken($key, $bucket));
+        $params = [
+            'key'    => $key,
+            'bucket' => $bucket ?: $this->config['bucket'],
+        ];
+        $client->setFormParams('token', $this->generateToken($params));
 
         return $client->request();
     }
@@ -175,6 +182,8 @@ class ScissorEntity
             $client->setMultiPartParams($key, $item);
         }
         $client->setMultiPartParams('viewer', $viewer);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setMultiPartParams('token', $this->generateToken($param));
 
         return $client->request();
     }
