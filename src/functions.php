@@ -1,5 +1,5 @@
 <?php
-namespace Colinwait\LaravelScissors;
+namespace Colinwait\LaravelPockets;
 
 if (!function_exists('safe_base64url_encode')) {
     function safe_base64url_encode($data)

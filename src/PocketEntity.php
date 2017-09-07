@@ -1,9 +1,11 @@
 <?php
 
 
-namespace Colinwait\LaravelScissors;
+namespace Colinwait\LaravelPockets;
 
-class ScissorEntity
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
+class PocketEntity
 {
     private $config;
 
@@ -25,7 +27,7 @@ class ScissorEntity
 
     public function __construct()
     {
-        $this->config = config('scissor');
+        $this->config = config('pocket');
     }
 
     public function generateToken(array $request_params = [])
@@ -183,6 +185,28 @@ class ScissorEntity
         }
         $client->setMultiPartParams('viewer', $viewer);
         $param['bucket'] = $this->config['bucket'];
+        $client->setMultiPartParams('token', $this->generateToken($param));
+
+        return $client->request();
+    }
+
+    public function uploadMaterial(UploadedFile $source)
+    {
+        $url             = $this->config['host'] . $this->config['apis']['upload-material'];
+        $client          = new Client('POST', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setMultiPartParams('file', fopen($source, 'r'), ['filename' => $source->getClientOriginalName()]);
+        $client->setMultiPartParams('token', $this->generateToken($param));
+
+        return $client->request();
+    }
+
+    public function uploadVideo(UploadedFile $source)
+    {
+        $url             = $this->config['host'] . $this->config['apis']['upload-video'];
+        $client          = new Client('POST', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setMultiPartParams('file', fopen($source, 'r'), ['filename' => $source->getClientOriginalName()]);
         $client->setMultiPartParams('token', $this->generateToken($param));
 
         return $client->request();

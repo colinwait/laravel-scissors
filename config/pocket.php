@@ -2,22 +2,24 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | scissor host
+    | pocket host
     |--------------------------------------------------------------------------
     |
     */
-    'host'       => env('SCISSOR_UPLOAD_HOST'),
+    'host'       => env('POCKET_UPLOAD_HOST'),
 
     /*
     |--------------------------------------------------------------------------
-    | scissor apis
+    | pocket apis
     |--------------------------------------------------------------------------
     |
     */
     'apis'       => [
-        'upload' => '/upload',
-        'delete' => '/delete',
-        'viewer' => '/viewer',
+        'upload'          => '/upload',
+        'delete'          => '/delete',
+        'viewer'          => '/viewer',
+        'upload-material' => '/material/upload',
+        'upload-video'    => '/video/upload',
     ],
 
     /*
@@ -26,8 +28,8 @@ return [
     |--------------------------------------------------------------------------
     |
     */
-    'access_key' => env('SCISSOR_AK'),
-    'secret_key' => env('SCISSOR_SK'),
+    'access_key' => env('POCKET_AK'),
+    'secret_key' => env('POCKET_SK'),
 
     /*
     |--------------------------------------------------------------------------
@@ -43,5 +45,5 @@ return [
     |--------------------------------------------------------------------------
     |
     */
-    'bucket'     => env('SCISSOR_BUCKET'),
+    'bucket'     => env('POCKET_BUCKET'),
 ];

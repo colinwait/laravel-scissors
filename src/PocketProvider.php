@@ -1,12 +1,12 @@
 <?php
 
-namespace Colinwait\LaravelScissors;
+namespace Colinwait\LaravelPockets;
 
 use Illuminate\Support\ServiceProvider;
 
-class ScissorProvider extends ServiceProvider
+class PocketProvider extends ServiceProvider
 {
-    protected $config = 'scissor';
+    protected $config = 'pocket';
 
     /**
      * Bootstrap the application services.
@@ -34,8 +34,8 @@ class ScissorProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('scissor', function () {
-            return new ScissorEntity();
+        $this->app->singleton('pocket', function () {
+            return new PocketEntity();
         });
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Colinwait\LaravelScissors;
+namespace Colinwait\LaravelPockets;
 
 use GuzzleHttp\Client as Http;
 use GuzzleHttp\Exception\BadResponseException;
@@ -60,6 +60,7 @@ class Client
             ]);
             $result   = json_decode($response->getBody(), 1);
         } catch (BadResponseException $e) {
+            logger($e->getMessage());
             $response = $e->getResponse();
             $result   = json_decode($response->getBody()->getContents(), 1);
         }

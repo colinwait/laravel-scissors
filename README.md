@@ -5,21 +5,21 @@
 
 #### 安装
 
-	composer require colinwait/laravel-scissors
+	composer require colinwait/laravel-pockets
 
 在 `config/app.php` 的 `providers` 数组中添加 ：
 
-	Colinwait\LaravelScissors\ScissorProvider::class,
+	Colinwait\LaravelPockets\PocketProvider::class,
 
 在 `config/app.php` 的 `aliases` 数组中添加 ：
 
-	'Scissor' => \Colinwait\LaravelScissors\Scissor::class,
+	'Pocket' => \Colinwait\LaravelPockets\Pocket::class,
 	
 执行以下命令导出配置文件和数据库迁移 ：
 
 	php artisan vendor:publish
 	
-配置 `config/scissor.php`
+配置 `config/pocket.php`
 
 执行数据库迁移 ：
 
@@ -29,26 +29,26 @@
 
 使用门面
 
-	use Colinwait\LaravelScissors\Scissor;
+	use Colinwait\LaravelPockets\Pocket;
 	
 #### 方法说明
 
-本地上传图片 (文件路径或base64格式)
+本地上传图片 (支持所有资源类型)
 
-	Scissor::putFile($path, $key = null);
+	Pocket::upload($path, $key = null);
 	
-url上传图片
+本地上传附件 
 
-	Scissor::fetch($url, $key = null);
+	Pocket::uploadMaterial(UploadedFile $file);
 	
-base64上传
-	
-	Scissor::put($data, $key = null);
+本地上传图片 (支持所有资源类型)
+
+	Pocket::uploadVideo(UploadedFile $file);
 	
 获取图片信息
 
-	Scissor::get($key);
+	Pocket::get($key);
 	
 删除图片
 
-	Scissor::delete($key);
+	Pocket::delete($key);

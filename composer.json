@@ -1,10 +1,10 @@
 {
-    "name": "colinwait/laravel-scissors",
-    "description": "scissors upload service.",
+    "name": "colinwait/laravel-pockets",
+    "description": "source upload service.",
     "minimum-stability": "dev",
     "keywords": [
         "laravel",
-        "scissors",
+        "pockets",
         "hoge",
         "colinwait"
     ],
@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Colinwait\\LaravelScissors\\": "src/"
+            "Colinwait\\LaravelPockets\\": "src/"
         },
         "files":[
             "src/functions.php"

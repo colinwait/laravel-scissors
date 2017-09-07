@@ -1,14 +1,14 @@
 <?php
 
 
-namespace Colinwait\LaravelScissors;
+namespace Colinwait\LaravelPockets;
 
 use Illuminate\Support\Facades\Facade;
 
-class Scissor extends Facade
+class Pocket extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'scissor';
+        return 'pocket';
     }
 }
