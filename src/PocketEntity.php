@@ -30,6 +30,13 @@ class PocketEntity
         $this->config = config('pocket');
     }
 
+    /**
+     * 生成token
+     *
+     * @param array $request_params
+     *
+     * @return string
+     */
     public function generateToken(array $request_params = [])
     {
         $once        = str_random(32);
@@ -47,6 +54,16 @@ class PocketEntity
         return $token;
     }
 
+    /**
+     * 上传图片
+     *
+     * @param      $source
+     * @param null $key
+     * @param int  $private
+     * @param null $bucket
+     *
+     * @return array|mixed
+     */
     public function upload($source, $key = null, $private = 0, $bucket = null)
     {
         $this->source = $source;
@@ -87,6 +104,14 @@ class PocketEntity
         return $client->request();
     }
 
+    /**
+     * 删除图片
+     *
+     * @param      $key
+     * @param null $bucket
+     *
+     * @return array|mixed
+     */
     public function delete($key, $bucket = null)
     {
         $url    = $this->config['host'] . $this->config['apis']['delete'] . '/' . $key;
@@ -100,12 +125,26 @@ class PocketEntity
         return $client->request();
     }
 
+    /**
+     * 是否是laravel文件资源
+     *
+     * @param null $source
+     *
+     * @return bool
+     */
     private function isFileSource($source = null)
     {
         $this->source = $source ?: $this->source;
         return is_a($this->source, 'Symfony\Component\HttpFoundation\File\UploadedFile');
     }
 
+    /**
+     * 是否是图片资源
+     *
+     * @param null $source
+     *
+     * @return bool
+     */
     private function isDataUrl($source = null)
     {
         $this->source = $source ?: $this->source;
@@ -114,6 +153,13 @@ class PocketEntity
         return is_null($data) ? false : true;
     }
 
+    /**
+     * 是否是base64格式
+     *
+     * @param null $source
+     *
+     * @return bool
+     */
     private function isBase64($source = null)
     {
         $this->source = $source ?: $this->source;
@@ -124,6 +170,13 @@ class PocketEntity
         return base64_encode(base64_decode($this->source)) === $this->source;
     }
 
+    /**
+     * 解码图片资源
+     *
+     * @param $data_url
+     *
+     * @return bool|null|string
+     */
     private function decodeDataUrl($data_url)
     {
         if (!is_string($data_url)) {
@@ -140,12 +193,26 @@ class PocketEntity
         return null;
     }
 
+    /**
+     * 是否是url
+     *
+     * @param null $source
+     *
+     * @return bool
+     */
     private function isUrl($source = null)
     {
         $this->source = $source ?: $this->source;
         return (bool)filter_var($this->source, FILTER_VALIDATE_URL);
     }
 
+    /**
+     * 是否文件路径
+     *
+     * @param null $source
+     *
+     * @return bool
+     */
     private function isFilePath($source = null)
     {
         $this->source = $source ?: $this->source;
@@ -160,6 +227,13 @@ class PocketEntity
         return false;
     }
 
+    /**
+     * 获取图片视图
+     *
+     * @param $viewer
+     *
+     * @return array|mixed
+     */
     public function getViewer($viewer)
     {
         $url    = $this->config['host'] . $this->config['apis']['viewer'] . '/' . $viewer;
@@ -167,6 +241,14 @@ class PocketEntity
         return $client->request();
     }
 
+    /**
+     * 更新图片视图
+     *
+     * @param $viewer
+     * @param $data
+     *
+     * @return array|mixed
+     */
     public function updateViewer($viewer, $data)
     {
         $url    = $this->config['host'] . $this->config['apis']['viewer'];
@@ -190,6 +272,13 @@ class PocketEntity
         return $client->request();
     }
 
+    /**
+     * 上传附件
+     *
+     * @param UploadedFile $source
+     *
+     * @return array|mixed
+     */
     public function uploadMaterial(UploadedFile $source)
     {
         $url             = $this->config['host'] . $this->config['apis']['upload-material'];
@@ -201,13 +290,127 @@ class PocketEntity
         return $client->request();
     }
 
-    public function uploadVideo(UploadedFile $source)
+    /**
+     * 上传视频音频
+     *
+     * @param UploadedFile $source
+     *
+     * @return array|mixed
+     */
+    public function uploadVideo($source, $callback_url = '')
     {
         $url             = $this->config['host'] . $this->config['apis']['upload-video'];
         $client          = new Client('POST', $url);
         $param['bucket'] = $this->config['bucket'];
-        $client->setMultiPartParams('file', fopen($source, 'r'), ['filename' => $source->getClientOriginalName()]);
+        switch (true) {
+            case $this->isFileSource($source):
+                $client->setMultiPartParams('file', fopen($source->getRealPath(), 'r'), ['filename' => $source->getClientOriginalName()]);
+                break;
+            case $this->isFilePath($source):
+                $client->setMultiPartParams('file', fopen($source, 'r'), ['filename' => basename($source)]);
+                break;
+            default:
+                return ['error' => 'No data source'];
+        }
         $client->setMultiPartParams('token', $this->generateToken($param));
+        $client->setMultiPartParams('callback_url', $callback_url);
+
+        return $client->request();
+    }
+
+    /**
+     * 获取转码设置
+     *
+     * @return array|mixed
+     */
+    public function getTranscodeSettings()
+    {
+        $url             = $this->config['host'] . $this->config['apis']['transcode-setting'];
+        $client          = new Client('GET', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setQuery('token', $this->generateToken($param));
+
+        return $client->request();
+    }
+
+    /**
+     * 更新设置
+     *
+     * @param $data
+     *
+     * @return array|mixed
+     */
+    public function updateTranscodeSettings($data)
+    {
+        $url             = $this->config['host'] . $this->config['apis']['transcode-setting'];
+        $client          = new Client('PUT', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setQuery('token', $this->generateToken($param));
+        foreach ($data as $key => $datum) {
+            $client->setQuery($key, $datum);
+        }
+
+        return $client->request();
+    }
+
+    /**
+     * 获取转码状态
+     *
+     * @param $hash_ids
+     *
+     * @return array|mixed
+     */
+    public function getTranscodeStatus($hash_ids)
+    {
+        $url             = $this->config['host'] . $this->config['apis']['transcode-status'];
+        $client          = new Client('GET', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setQuery('token', $this->generateToken($param));
+        $client->setQuery('hash_ids', $hash_ids);
+
+        return $client->request();
+    }
+
+    /**
+     * 快编
+     *
+     * @param        $data
+     * @param string $callback_url
+     *
+     * @return array|mixed
+     */
+    public function videoFastEdit($data, $callback_url = '')
+    {
+        $url             = $this->config['host'] . $this->config['apis']['video-fast-edit'];
+        $client          = new Client('POST', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setFormParams('token', $this->generateToken($param));
+        $client->setFormParams('data', $data);
+        $client->setFormParams('callback_url', $callback_url);
+
+        return $client->request();
+    }
+
+    /**
+     * 拆条
+     *
+     * @param        $hash_id
+     * @param        $start
+     * @param        $duration
+     * @param string $callback_url
+     *
+     * @return array|mixed
+     */
+    public function videoSplit($hash_id, $start, $duration, $callback_url = '')
+    {
+        $url             = $this->config['host'] . $this->config['apis']['video-split'];
+        $client          = new Client('POST', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setFormParams('token', $this->generateToken($param));
+        $client->setFormParams('hash_id', $hash_id);
+        $client->setFormParams('start', $start);
+        $client->setFormParams('duration', $duration);
+        $client->setFormParams('callback_url', $callback_url);
 
         return $client->request();
     }

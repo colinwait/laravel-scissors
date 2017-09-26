@@ -15,11 +15,15 @@ return [
     |
     */
     'apis'       => [
-        'upload'          => '/upload',
-        'delete'          => '/delete',
-        'viewer'          => '/viewer',
-        'upload-material' => '/material/upload',
-        'upload-video'    => '/video/upload',
+        'upload'            => '/upload',
+        'delete'            => '/delete',
+        'viewer'            => '/viewer',
+        'upload-material'   => '/material/upload',
+        'upload-video'      => '/video/upload',
+        'transcode-setting' => '/transcode/setting',
+        'transcode-status'  => '/transcode/status',
+        'video-split'       => '/video/split',
+        'video-fast-edit'   => '/video/fast-edit',
     ],
 
     /*

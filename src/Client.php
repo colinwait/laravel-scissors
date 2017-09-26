@@ -20,6 +20,8 @@ class Client
 
     private $headers;
 
+    private $query;
+
     public function __construct($method, $url)
     {
         $this->client = new Http();
@@ -49,6 +51,11 @@ class Client
         $this->headers[$name] = $value;
     }
 
+    public function setQuery($name, $value)
+    {
+        $this->query[$name] = $value;
+    }
+
     public function request()
     {
         $method = strtolower($this->method);
@@ -56,6 +63,7 @@ class Client
             $response = $this->client->$method($this->url, [
                 'multipart'   => $this->multipart_params,
                 'form_params' => $this->form_params,
+                'query'       => $this->query,
                 'headers'     => $this->headers,
             ]);
             $result   = json_decode($response->getBody(), 1);
