@@ -379,7 +379,7 @@ class PocketEntity
      *
      * @return array|mixed
      */
-    public function videoFastEdit($data, $callback_url = '')
+    public function videoFastEdit($data, $callback_url = '', $fast_edit_hash_id = '')
     {
         $url             = $this->config['host'] . $this->config['apis']['video-fast-edit'];
         $client          = new Client('POST', $url);
@@ -387,6 +387,7 @@ class PocketEntity
         $client->setFormParams('token', $this->generateToken($param));
         $client->setFormParams('data', $data);
         $client->setFormParams('callback_url', $callback_url);
+        $client->setFormParams('fast_edit_hash_id', $fast_edit_hash_id);
 
         return $client->request();
     }
@@ -401,7 +402,7 @@ class PocketEntity
      *
      * @return array|mixed
      */
-    public function videoSplit($hash_id, $start, $duration, $callback_url = '')
+    public function videoSplit($hash_id, $start, $duration, $callback_url = '', $split_hash_id = '')
     {
         $url             = $this->config['host'] . $this->config['apis']['video-split'];
         $client          = new Client('POST', $url);
@@ -411,6 +412,7 @@ class PocketEntity
         $client->setFormParams('start', $start);
         $client->setFormParams('duration', $duration);
         $client->setFormParams('callback_url', $callback_url);
+        $client->setFormParams('split_hash_id', $split_hash_id);
 
         return $client->request();
     }
