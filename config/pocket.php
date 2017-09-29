@@ -24,6 +24,7 @@ return [
         'transcode-status'  => '/transcode/status',
         'video-split'       => '/video/split',
         'video-fast-edit'   => '/video/fast-edit',
+        'video-screen-shot' => '/video/screen-short'
     ],
 
     /*

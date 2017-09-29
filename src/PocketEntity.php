@@ -293,7 +293,7 @@ class PocketEntity
     /**
      * 上传视频音频
      *
-     * @param UploadedFile $source
+     * @param $source
      *
      * @return array|mixed
      */
@@ -413,6 +413,26 @@ class PocketEntity
         $client->setFormParams('duration', $duration);
         $client->setFormParams('callback_url', $callback_url);
         $client->setFormParams('split_hash_id', $split_hash_id);
+
+        return $client->request();
+    }
+
+    /**
+     * 获取视频截图
+     *
+     * @param      $hash_id
+     * @param null $num
+     *
+     * @return array|mixed
+     */
+    public function getVideoScreenShots($hash_id, $num = null)
+    {
+        $url             = $this->config['host'] . $this->config['apis']['video-screen-shot'];
+        $client          = new Client('GET', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setQuery('token', $this->generateToken($param));
+        $client->setQuery('hash_id', $hash_id);
+        $client->setQuery('num', $num);
 
         return $client->request();
     }
