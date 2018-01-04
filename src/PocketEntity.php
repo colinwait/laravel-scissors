@@ -372,6 +372,23 @@ class PocketEntity
     }
 
     /**
+     * 获取转码列表状态
+     *
+     * @param $hash_ids
+     *
+     * @return array|mixed
+     */
+    public function getTranscodeStatusLists()
+    {
+        $url             = $this->config['host'] . $this->config['apis']['transcode-status-lists'];
+        $client          = new Client('GET', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setQuery('token', $this->generateToken($param));
+
+        return $client->request();
+    }
+
+    /**
      * 快编
      *
      * @param        $data
