@@ -1,0 +1,30 @@
+{
+    "name": "colinwait/laravel-pockets",
+    "description": "source upload service.",
+    "minimum-stability": "dev",
+    "keywords": [
+        "laravel",
+        "pockets",
+        "hoge",
+        "colinwait"
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "guzzlehttp/guzzle": "^6.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Colinwait\\LaravelPockets\\": "src/"
+        },
+        "files":[
+            "src/functions.php"
+        ]
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "colinwait",
+            "email": "colinwaitly@gmail.com"
+        }
+    ]
+}
