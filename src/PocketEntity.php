@@ -64,7 +64,7 @@ class PocketEntity
      *
      * @return array|mixed
      */
-    public function upload($source, $key = null, $private = 0, $bucket = null, $viewer)
+    public function upload($source, $key = null, $private = 0, $bucket = null, $viewer = null)
     {
         $this->source = $source;
         $private      = intval($private) ? 1 : 0;
