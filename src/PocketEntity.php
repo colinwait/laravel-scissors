@@ -454,4 +454,24 @@ class PocketEntity
 
         return $client->request();
     }
+
+    /**
+     * 转码操作，stop-停止
+     *
+     * @param $hash_ids
+     * @param $operation
+     *
+     * @return array|mixed
+     */
+    public function transcodeOperation($hash_ids, $operation)
+    {
+        $url             = $this->config['host'] . $this->config['apis']['transcode-operation'];
+        $client          = new Client('POST', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setFormParams('token', $this->generateToken($param));
+        $client->setFormParams('hash_ids', $hash_ids);
+        $client->setFormParams('operation', $operation);
+
+        return $client->request();
+    }
 }

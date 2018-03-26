@@ -22,10 +22,11 @@ return [
         'upload-video'           => '/video/upload',
         'transcode-setting'      => '/transcode/setting',
         'transcode-status'       => '/transcode/status',
+        'transcode-operation'    => '/transcode/operation',
         'transcode-status-lists' => '/transcode/status-lists',
         'video-split'            => '/video/split',
         'video-fast-edit'        => '/video/fast-edit',
-        'video-screen-shot'      => '/video/screen-short'
+        'video-screen-shot'      => '/video/screen-short',
     ],
 
     /*
