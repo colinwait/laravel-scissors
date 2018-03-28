@@ -18,7 +18,7 @@ class Client
 
     private $form_params;
 
-    private $headers;
+    private $headers = [];
 
     private $query;
 
