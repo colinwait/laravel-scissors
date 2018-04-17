@@ -300,7 +300,7 @@ class PocketEntity
      */
     public function uploadVideo($source, $callback_url = '')
     {
-        $url             = $this->config['host'] . $this->config['apis']['upload-video'];
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['upload-video'];
         $client          = new Client('POST', $url);
         $param['bucket'] = $this->config['bucket'];
         switch (true) {
@@ -326,7 +326,7 @@ class PocketEntity
      */
     public function getTranscodeSettings()
     {
-        $url             = $this->config['host'] . $this->config['apis']['transcode-setting'];
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['transcode-setting'];
         $client          = new Client('GET', $url);
         $param['bucket'] = $this->config['bucket'];
         $client->setQuery('token', $this->generateToken($param));
@@ -343,7 +343,7 @@ class PocketEntity
      */
     public function updateTranscodeSettings($data)
     {
-        $url             = $this->config['host'] . $this->config['apis']['transcode-setting'];
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['transcode-setting'];
         $client          = new Client('PUT', $url);
         $param['bucket'] = $this->config['bucket'];
         $client->setQuery('token', $this->generateToken($param));
@@ -363,7 +363,7 @@ class PocketEntity
      */
     public function getTranscodeStatus($hash_ids)
     {
-        $url             = $this->config['host'] . $this->config['apis']['transcode-status'];
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['transcode-status'];
         $client          = new Client('GET', $url);
         $param['bucket'] = $this->config['bucket'];
         $client->setQuery('token', $this->generateToken($param));
@@ -381,7 +381,7 @@ class PocketEntity
      */
     public function getTranscodeStatusLists()
     {
-        $url             = $this->config['host'] . $this->config['apis']['transcode-status-lists'];
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['transcode-status-lists'];
         $client          = new Client('GET', $url);
         $param['bucket'] = $this->config['bucket'];
         $client->setQuery('token', $this->generateToken($param));
@@ -399,7 +399,7 @@ class PocketEntity
      */
     public function videoFastEdit($data, $callback_url = '', $fast_edit_hash_id = '')
     {
-        $url             = $this->config['host'] . $this->config['apis']['video-fast-edit'];
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['video-fast-edit'];
         $client          = new Client('POST', $url);
         $param['bucket'] = $this->config['bucket'];
         $client->setFormParams('token', $this->generateToken($param));
@@ -422,7 +422,7 @@ class PocketEntity
      */
     public function videoSplit($hash_id, $start, $duration, $callback_url = '', $split_hash_id = '')
     {
-        $url             = $this->config['host'] . $this->config['apis']['video-split'];
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['video-split'];
         $client          = new Client('POST', $url);
         $param['bucket'] = $this->config['bucket'];
         $client->setFormParams('token', $this->generateToken($param));
@@ -445,7 +445,7 @@ class PocketEntity
      */
     public function getVideoScreenShots($hash_id, $num = null)
     {
-        $url             = $this->config['host'] . $this->config['apis']['video-screen-shot'];
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['video-screen-shot'];
         $client          = new Client('GET', $url);
         $param['bucket'] = $this->config['bucket'];
         $client->setQuery('token', $this->generateToken($param));
@@ -465,7 +465,7 @@ class PocketEntity
      */
     public function transcodeOperation($hash_ids, $operation)
     {
-        $url             = $this->config['host'] . $this->config['apis']['transcode-operation'];
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['transcode-operation'];
         $client          = new Client('POST', $url);
         $param['bucket'] = $this->config['bucket'];
         $client->setFormParams('token', $this->generateToken($param));
