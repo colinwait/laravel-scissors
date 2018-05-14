@@ -341,9 +341,9 @@ class PocketEntity
      *
      * @return array|mixed
      */
-    public function updateTranscodeSettings($data)
+    public function updateTranscodeSettings($id, $data)
     {
-        $url             = $this->config['mediaserver_host'] . $this->config['apis']['transcode-setting'];
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['transcode-setting'] . '/' . $id;
         $client          = new Client('PUT', $url);
         $param['bucket'] = $this->config['bucket'];
         $client->setQuery('token', $this->generateToken($param));
