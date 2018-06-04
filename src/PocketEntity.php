@@ -483,7 +483,7 @@ class PocketEntity
      *
      * @return array|mixed
      */
-    public function videoRetranscode($hash_ids, $callback_url = null)
+    public function videoRetranscode($hash_ids, $callback_url = null, $extend = null)
     {
         $url             = $this->config['mediaserver_host'] . $this->config['apis']['retranscode'];
         $client          = new Client('POST', $url);
@@ -491,6 +491,7 @@ class PocketEntity
         $client->setFormParams('token', $this->generateToken($param));
         $client->setFormParams('hash_ids', $hash_ids);
         $client->setFormParams('callback_url', $callback_url);
+        $client->setFormParams('extend', $extend);
 
         return $client->request();
     }
