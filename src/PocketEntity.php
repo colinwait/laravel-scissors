@@ -474,4 +474,24 @@ class PocketEntity
 
         return $client->request();
     }
+
+    /**
+     * 重新转码
+     *
+     * @param $hash_ids
+     * @param $callback_url
+     *
+     * @return array|mixed
+     */
+    public function videoRetranscode($hash_ids, $callback_url = null)
+    {
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['retranscode'];
+        $client          = new Client('POST', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setFormParams('token', $this->generateToken($param));
+        $client->setFormParams('hash_ids', $hash_ids);
+        $client->setFormParams('callback_url', $callback_url);
+
+        return $client->request();
+    }
 }
