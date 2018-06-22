@@ -64,7 +64,7 @@ class PocketEntity
      *
      * @return array|mixed
      */
-    public function upload($source, $key = null, $private = 0, $bucket = null, $viewer = null)
+    public function upload($source, $key = null, $private = 0, $bucket = null, array $viewer = [])
     {
         $this->source = $source;
         $private      = intval($private) ? 1 : 0;
@@ -98,8 +98,12 @@ class PocketEntity
             'key'     => $key,
             'bucket'  => $bucket ?: $this->config['bucket'],
             'private' => $private ? 1 : 0,
-            'viewer'  => $viewer,
         ];
+
+        foreach ($viewer as $k => $v) {
+            $client->setMultiPartParams($k, $v);
+        }
+
         $client->setMultiPartParams('token', $this->generateToken($params));
 
         return $client->request();
