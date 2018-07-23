@@ -30,6 +30,7 @@ return [
         'upload-video'           => '/video/upload',
         'transcode-setting'      => '/transcode/setting',
         'transcode-status'       => '/transcode/status',
+        'synthesis-status'       => '/synthesis/status',
         'transcode-operation'    => '/transcode/operation',
         'transcode-status-lists' => '/transcode/status-lists',
         'video-split'            => '/video/split',

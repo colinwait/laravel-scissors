@@ -523,4 +523,22 @@ class PocketEntity
 
         return $client->request();
     }
+
+    /**
+     * 获取视频合成状态
+     *
+     * @param $hash_ids
+     *
+     * @return array|mixed
+     */
+    public function getSynthesisStatus($hash_ids)
+    {
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['synthesis-status'];
+        $client          = new Client('GET', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setQuery('token', $this->generateToken($param));
+        $client->setQuery('hash_ids', $hash_ids);
+
+        return $client->request();
+    }
 }
