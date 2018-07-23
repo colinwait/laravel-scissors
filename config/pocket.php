@@ -35,7 +35,8 @@ return [
         'video-split'            => '/video/split',
         'video-fast-edit'        => '/video/fast-edit',
         'video-screen-shot'      => '/video/screen-short',
-        'retranscode'            => '/video/retranscode'
+        'retranscode'            => '/video/retranscode',
+        'video-synthesis'        => '/video/synthesis',
     ],
 
     /*
