@@ -38,6 +38,7 @@ return [
         'video-screen-shot'      => '/video/screen-short',
         'retranscode'            => '/video/retranscode',
         'video-synthesis'        => '/video/synthesis',
+        'video-resynthesis'      => '/video/resynthesis',
     ],
 
     /*
