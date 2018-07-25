@@ -523,6 +523,7 @@ class PocketEntity
 
         return $client->request();
     }
+
     /*
     * 视频字幕模板合成
     *
@@ -533,13 +534,14 @@ class PocketEntity
     *
     * @return array|mixed
     */
-    public function videoReSynthesis($hash_id, $captions, $texts, $callback_url)
+    public function videoReSynthesis($from_hash_id, $hash_id, $captions, $texts, $callback_url)
     {
         $url             = $this->config['mediaserver_host'] . $this->config['apis']['video-resynthesis'];
         $client          = new Client('POST', $url);
         $param['bucket'] = $this->config['bucket'];
         $client->setFormParams('token', $this->generateToken($param));
         $client->setFormParams('hash_id', $hash_id);
+        $client->setFormParams('from_hash_id', $from_hash_id);
         $client->setFormParams('callback_url', $callback_url);
         $client->setFormParams('captions', $captions);
         $client->setFormParams('texts', $texts);
