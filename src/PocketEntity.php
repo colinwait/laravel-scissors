@@ -302,7 +302,7 @@ class PocketEntity
      *
      * @return array|mixed
      */
-    public function uploadVideo($source, $callback_url = '')
+    public function uploadVideo($source, $callback_url = '', $is_transcode = 1)
     {
         $url             = $this->config['mediaserver_host'] . $this->config['apis']['upload-video'];
         $client          = new Client('POST', $url);
@@ -312,13 +312,34 @@ class PocketEntity
                 $client->setMultiPartParams('file', fopen($source->getRealPath(), 'r'), ['filename' => $source->getClientOriginalName()]);
                 break;
             case $this->isFilePath($source):
-                $client->setMultiPartParams('file', fopen($source, 'r'), ['filename' => basename($source)]);
+                $client->setMultiPartParams('path', $source);
                 break;
             default:
                 return ['error' => 'No data source'];
         }
         $client->setMultiPartParams('token', $this->generateToken($param));
         $client->setMultiPartParams('callback_url', $callback_url);
+        $client->setMultiPartParams('is_transcode', $is_transcode);
+
+        return $client->request();
+    }
+
+    /**
+     * 上传多码流视频音频
+     *
+     * @param $source
+     *
+     * @return array|mixed
+     */
+    public function uploadMultiStreamVideoFromFtp($sources, $callback_url = '', $is_transcode = 1)
+    {
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['upload-ftp-multi-video'];
+        $client          = new Client('POST', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setMultiPartParams('paths', $sources);
+        $client->setMultiPartParams('token', $this->generateToken($param));
+        $client->setMultiPartParams('callback_url', $callback_url);
+        $client->setMultiPartParams('is_transcode', $is_transcode);
 
         return $client->request();
     }
@@ -328,9 +349,12 @@ class PocketEntity
      *
      * @return array|mixed
      */
-    public function getTranscodeSettings()
+    public function getTranscodeSettings($id = '')
     {
-        $url             = $this->config['mediaserver_host'] . $this->config['apis']['transcode-setting'];
+        $url = $this->config['mediaserver_host'] . $this->config['apis']['transcode-setting'];
+        if ($id) {
+            $url = $url . '/' . $id;
+        }
         $client          = new Client('GET', $url);
         $param['bucket'] = $this->config['bucket'];
         $client->setQuery('token', $this->generateToken($param));
@@ -354,6 +378,43 @@ class PocketEntity
         foreach ($data as $key => $datum) {
             $client->setQuery($key, $datum);
         }
+
+        return $client->request();
+    }
+
+    /**
+     * 创建转码设置
+     *
+     * @param $data
+     *
+     * @return array|mixed
+     */
+    public function createTranscodeSettings($data)
+    {
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['transcode-setting'];
+        $client          = new Client('POST', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setFormParams('token', $this->generateToken($param));
+        foreach ($data as $key => $datum) {
+            $client->setFormParams($key, $datum);
+        }
+
+        return $client->request();
+    }
+
+    /**
+     * 删除转码设置
+     *
+     * @param $data
+     *
+     * @return array|mixed
+     */
+    public function deleteTranscodeSettings($id)
+    {
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['transcode-setting'] . '/' . $id;
+        $client          = new Client('DELETE', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setFormParams('token', $this->generateToken($param));
 
         return $client->request();
     }
@@ -563,6 +624,42 @@ class PocketEntity
         $param['bucket'] = $this->config['bucket'];
         $client->setQuery('token', $this->generateToken($param));
         $client->setQuery('hash_ids', $hash_ids);
+
+        return $client->request();
+    }
+
+    /**
+     * 获取 ftp 目录文件
+     *
+     * @param $hash_ids
+     *
+     * @return array|mixed
+     */
+    public function getFtpFiles($path = '')
+    {
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['ftp'];
+        $client          = new Client('GET', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setQuery('token', $this->generateToken($param));
+        $client->setQuery('path', $path);
+
+        return $client->request();
+    }
+
+    /**
+     * 获取 ftp 目录结构
+     *
+     * @param $hash_ids
+     *
+     * @return array|mixed
+     */
+    public function getFtpPath($path = '')
+    {
+        $url             = $this->config['mediaserver_host'] . $this->config['apis']['ftp-path'];
+        $client          = new Client('GET', $url);
+        $param['bucket'] = $this->config['bucket'];
+        $client->setQuery('token', $this->generateToken($param));
+        $client->setQuery('path', $path);
 
         return $client->request();
     }

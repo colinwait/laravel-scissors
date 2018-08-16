@@ -28,6 +28,7 @@ return [
         'viewer'                 => '/viewer',
         'upload-material'        => '/material/upload',
         'upload-video'           => '/video/upload',
+        'upload-ftp-multi-video' => '/video/ftp-upload-multi',
         'transcode-setting'      => '/transcode/setting',
         'transcode-status'       => '/transcode/status',
         'synthesis-status'       => '/synthesis/status',
@@ -39,6 +40,8 @@ return [
         'retranscode'            => '/video/retranscode',
         'video-synthesis'        => '/video/synthesis',
         'video-resynthesis'      => '/video/resynthesis',
+        'ftp'                    => '/video/ftp',
+        'ftp-path'               => '/video/ftp/path',
     ],
 
     /*
