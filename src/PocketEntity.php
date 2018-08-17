@@ -302,7 +302,7 @@ class PocketEntity
      *
      * @return array|mixed
      */
-    public function uploadVideo($source, $callback_url = '', $is_transcode = 1)
+    public function uploadVideo($source, $callback_url = '', $setting_id = 0, $is_transcode = 1)
     {
         $url             = $this->config['mediaserver_host'] . $this->config['apis']['upload-video'];
         $client          = new Client('POST', $url);
@@ -320,6 +320,7 @@ class PocketEntity
         $client->setMultiPartParams('token', $this->generateToken($param));
         $client->setMultiPartParams('callback_url', $callback_url);
         $client->setMultiPartParams('is_transcode', $is_transcode);
+        $client->setMultiPartParams('setting_id', $setting_id);
 
         return $client->request();
     }
