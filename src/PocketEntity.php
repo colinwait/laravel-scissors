@@ -312,6 +312,9 @@ class PocketEntity
                 $client->setMultiPartParams('file', fopen($source->getRealPath(), 'r'), ['filename' => $source->getClientOriginalName()]);
                 break;
             case $this->isFilePath($source):
+                $client->setMultiPartParams('file', fopen($source, 'r'), ['filename' => basename($source)]);
+                break;
+            case is_string($source):
                 $client->setMultiPartParams('path', $source);
                 break;
             default:
@@ -337,10 +340,10 @@ class PocketEntity
         $url             = $this->config['mediaserver_host'] . $this->config['apis']['upload-ftp-multi-video'];
         $client          = new Client('POST', $url);
         $param['bucket'] = $this->config['bucket'];
-        $client->setMultiPartParams('paths', $sources);
-        $client->setMultiPartParams('token', $this->generateToken($param));
-        $client->setMultiPartParams('callback_url', $callback_url);
-        $client->setMultiPartParams('is_transcode', $is_transcode);
+        $client->setFormParams('paths', $sources);
+        $client->setFormParams('token', $this->generateToken($param));
+        $client->setFormParams('callback_url', $callback_url);
+        $client->setFormParams('is_transcode', $is_transcode);
 
         return $client->request();
     }
