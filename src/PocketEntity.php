@@ -317,6 +317,9 @@ class PocketEntity
             case is_string($source):
                 $client->setMultiPartParams('path', $source);
                 break;
+            case $this->isUrl($source):
+                $client->setMultiPartParams('url', safe_base64url_encode($source));
+                break;
             default:
                 return ['error' => 'No data source'];
         }
