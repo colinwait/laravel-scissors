@@ -314,11 +314,11 @@ class PocketEntity
             case $this->isFilePath($source):
                 $client->setMultiPartParams('file', fopen($source, 'r'), ['filename' => basename($source)]);
                 break;
-            case is_string($source):
-                $client->setMultiPartParams('path', $source);
-                break;
             case $this->isUrl($source):
                 $client->setMultiPartParams('url', safe_base64url_encode($source));
+                break;
+            case is_string($source):
+                $client->setMultiPartParams('path', $source);
                 break;
             default:
                 return ['error' => 'No data source'];
