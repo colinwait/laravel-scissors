@@ -1,12 +1,13 @@
 {
-    "name": "colinwait/laravel-pockets",
+    "name": "chef/laravel-pockets",
     "description": "source upload service.",
     "minimum-stability": "dev",
     "keywords": [
         "laravel",
         "pockets",
         "hoge",
-        "colinwait"
+        "colinwait",
+        "chef"
     ],
     "require": {
         "php": ">=5.5.9",
