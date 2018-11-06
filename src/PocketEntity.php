@@ -11,6 +11,10 @@ class PocketEntity
 
     private $source;
 
+    private $site_id;
+
+    private $site_config;
+
     private $positions = [
         'top-left',
         'top',
@@ -27,7 +31,32 @@ class PocketEntity
 
     public function __construct()
     {
-        $this->config = config('pocket');
+        $this->config  = config('pocket');
+        $this->site_id = auth()->check() ? auth()->user()->site_id : 0;
+        $this->init();
+    }
+
+    private function init()
+    {
+        if (!$this->site_id) {
+            return false;
+        }
+        $this->site_config = $site_config = site_material_config();
+        if ($host = array_get($site_config, "upload_config.{$this->site_id}.image_upload_host")) {
+            $this->config['host'] = $host;
+        }
+        if ($media_host = array_get($site_config, "upload_config.{$this->site_id}.media_upload_host")) {
+            $this->config['mediaserver_host'] = $media_host;
+        }
+        if ($ak = array_get($site_config, "upload_config.{$this->site_id}.access_key")) {
+            $this->config['access_key'] = $ak;
+        }
+        if ($sk = array_get($site_config, "upload_config.{$this->site_id}.secret_key")) {
+            $this->config['secret_key'] = $sk;
+        }
+        if ($bucket = array_get($site_config, "upload_config.{$this->site_id}.bucket")) {
+            $this->config['bucket'] = $bucket;
+        }
     }
 
     /**
@@ -37,19 +66,20 @@ class PocketEntity
      *
      * @return string
      */
-    public function generateToken(array $request_params = [])
+    public function generateToken(array $request_params = [], $config = [])
     {
-        $once        = str_random(32);
-        $timestamp   = time();
-        $form_params = [
+        $this->config = array_merge($this->config, $config);
+        $once         = str_random(32);
+        $timestamp    = time();
+        $form_params  = [
             'once'      => $once,
             'timestamp' => $timestamp,
             'expire'    => $this->config['expire'],
         ];
-        $params      = array_merge($form_params, $request_params);
-        $policy      = safe_base64url_encode(json_encode($params));
-        $encode_sign = safe_base64url_encode(hash_hmac('sha1', $policy, $this->config['secret_key'], true));
-        $token       = $this->config['access_key'] . ':' . $encode_sign . ':' . $policy;
+        $params       = array_merge($form_params, $request_params);
+        $policy       = safe_base64url_encode(json_encode($params));
+        $encode_sign  = safe_base64url_encode(hash_hmac('sha1', $policy, $this->config['secret_key'], true));
+        $token        = $this->config['access_key'] . ':' . $encode_sign . ':' . $policy;
 
         return $token;
     }
